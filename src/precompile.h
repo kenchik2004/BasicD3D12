@@ -25,19 +25,25 @@ template <class T>
 class Singleton {
 public:
 
-    static inline T* Instance() {
-        static T instance_;
-        return &instance_;
-    }
+	static inline T* Instance() {
+		static T instance_;
+		return &instance_;
+	}
 
 protected:
-    Singleton() {}
-    virtual ~Singleton() {}
+	Singleton() {}
+	virtual ~Singleton() {}
 
 private:
-    Singleton(const Singleton& rhs) {}
-    void operator=(const Singleton& rhs) {}
+	Singleton(const Singleton& rhs) {}
+	void operator=(const Singleton& rhs) {}
 };
 
-#define SINGLETON_CLASS(ClassName) public Singleton<ClassName>
-
+//stdライブラリのヘッダーファイル
+#include <vector>
+#include <array>
+#include <string>
+#include <memory>
+#include <functional>
+#include <map>
+#include <unordered_map>

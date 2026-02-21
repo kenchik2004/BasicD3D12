@@ -21,6 +21,11 @@
   <ItemGroup>
     <ClInclude Include="src\precompile.h" />
     <ClInclude Include="src\System\Managers\ApplicationManager\ApplicationManager.h" />
+    <ClInclude Include="src\System\Managers\DirectX12Manager\DirectX12Manager.h" />
+    <ClInclude Include="src\System\Managers\WindowManager\WindowManager.h" />
+    <ClInclude Include="src\System\SystemUtils\DescriptorHeaps\DescriptorHeap\DescriptorHeap.h" />
+    <ClInclude Include="src\System\SystemUtils\Descriptors\BaseView\View.h" />
+    <ClInclude Include="src\System\SystemUtils\DeviceContext\ID3D12DeviceContext.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
@@ -29,6 +34,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\System\Managers\ApplicationManager\ApplicationManager.cpp" />
+    <ClCompile Include="src\System\Managers\DirectX12Manager\DirectX12Manager.cpp" />
+    <ClCompile Include="src\System\Managers\WindowManager\WindowManager.cpp" />
+    <ClCompile Include="src\System\SystemUtils\DescriptorHeaps\DescriptorHeap\DescriptorHeap.cpp" />
+    <ClCompile Include="src\System\SystemUtils\Descriptors\BaseView\View.cpp" />
+    <ClCompile Include="src\System\SystemUtils\DeviceContext\ID3D12DeviceContext.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
