@@ -45,18 +45,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 //-----------------------------------------------------------------------
 int CreateMainWindow(HWND& win_handle, const std::wstring& class_name, const std::wstring& window_name, unsigned int window_w, unsigned int window_h) {
 
-	WNDCLASS window_class = {};			// 空っぽのウィンドウクラスの構造体を作成
+	WNDCLASSW window_class = {};			// 空っぽのウィンドウクラスの構造体を作成
 
 	window_class.lpfnWndProc = WindowProc;				// ウィンドウプロシージャ
 
 	//このウィンドウがどのアプリ(.exe)に属するかを識別するための識別子
-	window_class.hInstance = GetModuleHandle(NULL);		// このアプリケーションのハンドルを取得して設定
+	window_class.hInstance = GetModuleHandle(nullptr);		// このアプリケーションのハンドルを取得して設定
 
 	//OSがウィンドウを識別するための名前を設定(基本的になんでもいい)
 	window_class.lpszClassName = class_name.c_str();
 
 	//ウィンドウクラスをOSに登録
-	RegisterClass(&window_class);
+	RegisterClassW(&window_class);
 
 	//ウィンドウそのものを作成
 	win_handle = CreateWindowEx(
@@ -73,7 +73,7 @@ int CreateMainWindow(HWND& win_handle, const std::wstring& class_name, const std
 
 		NULL, NULL,			//親ウィンドウ、メニューハンドルは特に必要ないのでNULL
 
-		//このウィンドウが属するアプリケーションのハンドルを指定(GetModuleHandle(NULL)で取得したもの)
+		//このウィンドウが属するアプリケーションのハンドルを指定(GetModuleHandle(nullptr)で取得したもの)
 		window_class.hInstance,
 		NULL			//このウィンドウに関連付ける追加のデータがあればここで渡すことができるが、今回は特にないのでNULL
 	);
@@ -123,6 +123,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// ここにゲームの更新や描画のコードを入れることになる
 
 	}
-	UnregisterClassW(L"BasicD3D12Window", GetModuleHandle(NULL));		// ウィンドウクラスの登録を解除する
+	UnregisterClassW(L"BasicD3D12Window", GetModuleHandle(nullptr));		// ウィンドウクラスの登録を解除する
 	return 0;
 }

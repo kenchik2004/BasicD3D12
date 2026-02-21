@@ -35,8 +35,8 @@ protected:
     virtual ~Singleton() {}
 
 private:
-    Singleton(const Singleton& rhs) {}
-    void operator=(const Singleton& rhs) {}
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
 };
 
 #define SINGLETON_CLASS(ClassName) public Singleton<ClassName>
