@@ -21,7 +21,30 @@ namespace System {
 		ComPtr<IDXGISwapChain4> swap_chain;
 		int CreateMainWindow();
 		// バックバッファのリソースとRTVを管理するための配列。スワップチェインのバッファ数は2に固定しているため、要素数も2にしている。
-		std::array<std::unique_ptr<RenderTargetView>, 2> back_buffers;
+		struct Texture {
+
+		private:
+			ComPtr<ID3D12Resource> d3d_resource;
+			std::unique_ptr<RenderTargetView> rtv;
+			std::unique_ptr<DepthStencilView> dsv;
+			std::unique_ptr<ShaderResourceView> srv;
+		public:
+			Texture(ComPtr<ID3D12Resource> d3d_resource_,
+				std::unique_ptr<RenderTargetView> rtv_,
+				std::unique_ptr<DepthStencilView> dsv_,
+				std::unique_ptr<ShaderResourceView> srv_) {
+				d3d_resource = d3d_resource_;
+				rtv = std::move(rtv_);
+				dsv = std::move(dsv_);
+				srv = std::move(srv_);
+
+			}
+			ID3D12Resource* Resource() { return d3d_resource.Get(); }
+			RenderTargetView* Rtv() { return rtv.get(); }
+			DepthStencilView* Dsv() { return dsv.get(); }
+			ShaderResourceView* Srv() { return srv.get(); }
+		};
+		std::array<std::unique_ptr<Texture>, 2> back_buffers;
 
 		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	public:
@@ -44,9 +67,9 @@ namespace System {
 		}
 
 		IDXGISwapChain4* GetSwapChain() const { return swap_chain.Get(); }
-		RenderTargetView* GetCurrentBackBuffer() const {
+		Texture* GetCurrentBackBuffer() const {
 			UINT back_buffer_index = swap_chain->GetCurrentBackBufferIndex();		// 現在のバックバッファのインデックスを取得
-			return back_buffers[back_buffer_index].get();		// バックバッファのRTVを返す
+			return back_buffers[back_buffer_index].get();
 		}
 
 		//--------------------------------------------------------------

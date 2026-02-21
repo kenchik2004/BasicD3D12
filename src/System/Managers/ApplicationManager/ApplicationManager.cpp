@@ -1,7 +1,6 @@
 #include "ApplicationManager.h"
 #include "System/Managers/WindowManager/WindowManager.h"
 #include "System/Managers/DirectX12Manager/DirectX12Manager.h"
-#include <thread>
 
 namespace System {
 
@@ -55,13 +54,13 @@ namespace System {
 				// ここにゲームの更新や描画のコードを入れることになる
 
 				auto back_buffer = WindowManager::Instance()->GetCurrentBackBuffer();
-				auto handle = back_buffer->GetCPUHandle();
+				auto handle = back_buffer->Rtv()->GetCPUHandle();
 				auto cmd_list = DirectX12Manager::Instance()->GetDrawContext()->GetCommandList();
 				auto cmd_allocator = DirectX12Manager::Instance()->GetDrawContext()->GetCommandAllocator();
 
 				D3D12_RESOURCE_BARRIER begin_barrier = {};
 				begin_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				begin_barrier.Transition.pResource = back_buffer->GetResource();
+				begin_barrier.Transition.pResource = back_buffer->Resource();
 				begin_barrier.Transition.Subresource = 0;
 				begin_barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 				begin_barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -73,7 +72,7 @@ namespace System {
 
 				D3D12_RESOURCE_BARRIER end_barrier = {};
 				end_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				end_barrier.Transition.pResource = back_buffer->GetResource();
+				end_barrier.Transition.pResource = back_buffer->Resource();
 				end_barrier.Transition.Subresource = 0;
 				end_barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 				end_barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

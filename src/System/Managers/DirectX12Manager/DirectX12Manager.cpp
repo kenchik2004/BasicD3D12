@@ -1,6 +1,6 @@
 #include "DirectX12Manager.h" 
 #include "System/SystemUtils/DeviceContext/ID3D12DeviceContext.h"
-#include "System/SystemUtils/Descriptors/BaseView/View.h"
+#include "System/SystemUtils/DescriptorHeaps/DescriptorHeap/DescriptorHeap.h"
 #include "System/Managers/WindowManager/WindowManager.h"
 #ifdef _DEBUG
 #include <dxgidebug.h>
@@ -47,7 +47,7 @@ namespace System {
 		return 0;
 	}
 
-	std::unique_ptr<RenderTargetView> DirectX12Manager::CreateRenderTargetView(ID3D12Resource* resource, const D3D12_RENDER_TARGET_VIEW_DESC& desc) {
+	std::unique_ptr<RenderTargetView> DirectX12Manager::CreateRenderTargetView(ID3D12Resource* resource,D3D12_RENDER_TARGET_VIEW_DESC* desc) {
 		VIEW_DESC view_desc = {};
 		view_desc.type = VIEW_DESC::VIEW_TYPE::RTV;
 		view_desc.rtv_desc = desc;
@@ -57,7 +57,7 @@ namespace System {
 
 	}
 
-	std::unique_ptr<ShaderResourceView> DirectX12Manager::CreateShaderResourceView(ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& desc)
+	std::unique_ptr<ShaderResourceView> DirectX12Manager::CreateShaderResourceView(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VIEW_DESC* desc)
 	{
 		VIEW_DESC view_desc = {};
 		view_desc.type = VIEW_DESC::VIEW_TYPE::SRV;
@@ -67,7 +67,7 @@ namespace System {
 		return std::unique_ptr<ShaderResourceView>(cast_view);
 	}
 
-	std::unique_ptr<DepthStencilView> DirectX12Manager::CreateDepthStencilView(ID3D12Resource* resource, const D3D12_DEPTH_STENCIL_VIEW_DESC& desc)
+	std::unique_ptr<DepthStencilView> DirectX12Manager::CreateDepthStencilView(ID3D12Resource* resource, D3D12_DEPTH_STENCIL_VIEW_DESC* desc)
 	{
 		VIEW_DESC view_desc = {};
 		view_desc.type = VIEW_DESC::VIEW_TYPE::DSV;
@@ -143,6 +143,11 @@ namespace System {
 #endif
 
 		return 0;
+	}
+	DirectX12Manager* DirectX12Manager::Instance()
+	{
+		static DirectX12Manager manager;
+		return &manager;
 	}
 	int DirectX12Manager::CreteDevice(ComPtr<IDXGIAdapter>& dxgi_adapter)
 	{

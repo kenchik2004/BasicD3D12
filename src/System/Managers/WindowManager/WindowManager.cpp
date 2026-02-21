@@ -168,11 +168,15 @@ namespace System {
 			rtv_desc.Texture2D.PlaneSlice = 0;	// バックバッファのプレーンは0を指定
 			std::unique_ptr<RenderTargetView> rtv =
 				DirectX12Manager::Instance()->
-				CreateRenderTargetView(back_buffer.Get(), rtv_desc);		// バックバッファのRTVを作成
+				CreateRenderTargetView(back_buffer.Get(), &rtv_desc);		// バックバッファのRTVを作成
+
 			if (rtv == nullptr) {		// RTVの作成に失敗した場合は、失敗を示す -1 を返す
 				return -1;
 			}
-			back_buffers[i] = std::move(rtv);		// 作成したRTVをバックバッファのRTV配列に保存する
+
+			auto srv = DirectX12Manager::Instance()->CreateShaderResourceView(back_buffer.Get(), nullptr);
+			back_buffers[i] = std::make_unique<Texture>(std::move(back_buffer), std::move(rtv), nullptr, std::move(srv));
+
 
 		}
 		return 0;

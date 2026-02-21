@@ -1,4 +1,3 @@
-#pragma once
 #include "System/SystemUtils/Descriptors/BaseView/View.h"
 
 namespace System {
@@ -19,14 +18,19 @@ namespace System {
 		virtual ~DescriptorHeap() { descriptor_heap.Reset(); }
 		virtual std::unique_ptr<View> CreateView(const VIEW_DESC& desc, ID3D12Resource* resource) = 0;
 
+		bool IsValid()const {
+			return descriptor_heap
+				&& max_num_descriptors != 0
+				&& increment_size != 0;
+		}
 		// ディスクリプタヒープを管理する関数をここに追加していく
 	protected:
 		ComPtr<ID3D12DescriptorHeap> descriptor_heap;
 		D3D12_DESCRIPTOR_HEAP_TYPE type;
 		D3D12_CPU_DESCRIPTOR_HANDLE start;
-		unsigned int max_num_descriptors;
-		unsigned int current_descriptors_num;
-		unsigned int increment_size;
+		unsigned int max_num_descriptors = 0;
+		unsigned int current_descriptors_num = 0;
+		unsigned int increment_size = 0;
 	};
 
 	class CSUHeap : public DescriptorHeap

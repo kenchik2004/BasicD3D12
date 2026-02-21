@@ -3,15 +3,19 @@
 //D3D12には、デバイスコンテキストが存在しないため、DirectX11のようなデバイスコンテキストを表すクラスは必要ない。
 //ただ、コマンドキューやコマンドリストを管理する必要はあるため、自作でD3D12用のコンテキストを作ることにする。
 #include "System/SystemUtils/DeviceContext/ID3D12DeviceContext.h"
-#include "System/SystemUtils/Descriptors/BaseView/View.h"
-#include "System/SystemUtils/DescriptorHeaps/DescriptorHeap/DescriptorHeap.h"
 namespace System {
 	class DescriptorHeap;
+	class RTVHeap;
+	class DSVHeap;
+	class CSUHeap;
+	class RenderTargetView;
+	class ShaderResourceView;
+	class DepthStencilView;
 	//-------------------------------------------------------------
 	// @brief DirectX12マネージャー
 	// @brief DirectX12のデバイスやコマンドキューなどの管理を行うクラス
 	//-------------------------------------------------------------
-	class DirectX12Manager : public Singleton<DirectX12Manager>
+	class DirectX12Manager
 	{
 	private:
 		friend class Singleton<DirectX12Manager>;
@@ -39,9 +43,9 @@ namespace System {
 		// コンピュートキューまで管理すると滅茶苦茶に散らかるので、今は描画とコピーだけやっておこう
 		//ComPtr<ID3D12CommandQueue> compute_queue;
 
-		std::unique_ptr<DescriptorHeap> cbv_srv_uav_heap = nullptr;
-		std::unique_ptr<DescriptorHeap> rtv_heap = nullptr;
-		std::unique_ptr<DescriptorHeap> dsv_heap = nullptr;
+		std::unique_ptr<CSUHeap> cbv_srv_uav_heap = nullptr;
+		std::unique_ptr<RTVHeap> rtv_heap = nullptr;
+		std::unique_ptr<DSVHeap> dsv_heap = nullptr;
 
 		int CreteDevice(ComPtr<IDXGIAdapter>& dxgi_adapter);
 		int CreateSingleCommandQueue(D3D12_COMMAND_LIST_TYPE context_type, ComPtr<ID3D12CommandQueue>& command_queue, ComPtr<ID3D12Fence>& fence_);
@@ -74,12 +78,13 @@ namespace System {
 		int WaitForFence(ComPtr<ID3D12Fence> fence_, const size_t& value);
 		int DrawStart();
 
-		std::unique_ptr<RenderTargetView> CreateRenderTargetView(ID3D12Resource* resource, const D3D12_RENDER_TARGET_VIEW_DESC& desc);
-		std::unique_ptr<ShaderResourceView> CreateShaderResourceView(ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& desc);
-		std::unique_ptr<DepthStencilView> CreateDepthStencilView(ID3D12Resource* resource, const D3D12_DEPTH_STENCIL_VIEW_DESC& desc);
+		std::unique_ptr<RenderTargetView> CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC* desc);
+		std::unique_ptr<ShaderResourceView> CreateShaderResourceView(ID3D12Resource* resource, D3D12_SHADER_RESOURCE_VIEW_DESC* desc);
+		std::unique_ptr<DepthStencilView> CreateDepthStencilView(ID3D12Resource* resource, D3D12_DEPTH_STENCIL_VIEW_DESC* desc);
 
 
 		int Initialize();
 		int Finalize();
+		static DirectX12Manager* Instance();
 	};
 }
