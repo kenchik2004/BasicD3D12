@@ -27,7 +27,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		return 0;
 	}
 	// それ以外のメッセージはデフォルトの処理を行う
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);		//Windowsのデフォルト処理
+	return DefWindowProcW(hwnd, uMsg, wParam, lParam);		//Windowsのデフォルト処理
 }
 
 
@@ -59,7 +59,7 @@ int CreateMainWindow(HWND& win_handle, const std::wstring& class_name, const std
 	RegisterClassW(&window_class);
 
 	//ウィンドウそのものを作成
-	win_handle = CreateWindowEx(
+	win_handle = CreateWindowExW(
 		0,						//特にスタイル拡張はしないので0
 		class_name.c_str(),		//ウィンドウクラス名
 		window_name.c_str(),	//ウィンドウタイトル
@@ -71,15 +71,15 @@ int CreateMainWindow(HWND& win_handle, const std::wstring& class_name, const std
 		// ウィンドウの幅と高さは引数で指定された値になる
 		CW_USEDEFAULT, CW_USEDEFAULT, window_w, window_h,
 
-		NULL, NULL,			//親ウィンドウ、メニューハンドルは特に必要ないのでNULL
+		nullptr, nullptr,			//親ウィンドウ、メニューハンドルは特に必要ないのでNULL
 
 		//このウィンドウが属するアプリケーションのハンドルを指定(GetModuleHandle(nullptr)で取得したもの)
 		window_class.hInstance,
-		NULL			//このウィンドウに関連付ける追加のデータがあればここで渡すことができるが、今回は特にないのでNULL
+		nullptr			//このウィンドウに関連付ける追加のデータがあればここで渡すことができるが、今回は特にないのでNULL
 	);
 
 
-	if (win_handle == NULL) {		//ウィンドウの作成に失敗した場合はNULLが返るので、失敗を示す -1 を返す
+	if (win_handle == nullptr) {		//ウィンドウの作成に失敗した場合はnullptrが返るので、失敗を示す -1 を返す
 		return -1;
 	}
 
@@ -104,13 +104,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		return -1;
 	}
 
-	MSG msg;		// Windowsのメッセージを格納する構造体
+	MSG msg = {};		// Windowsのメッセージを格納する構造体
 
 	while (true) {
 
 		// メッセージが来ているか確認。来ていればmsgに格納して、キューから削除する
 		// 英語でPeek = 「覗く」という意味。PeekMessageは「メッセージを覗いてみる」という意味で、メッセージが来ているか確認する関数
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			// 来ていた場合、TranslateMessageでキーボード入力などのメッセージを翻訳して、DispatchMessageでウィンドウプロシージャに送る
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
