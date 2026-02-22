@@ -3,6 +3,7 @@
 //D3D12には、デバイスコンテキストが存在しないため、DirectX11のようなデバイスコンテキストを表すクラスは必要ない。
 //ただ、コマンドキューやコマンドリストを管理する必要はあるため、自作でD3D12用のコンテキストを作ることにする。
 #include "System/SystemUtils/DeviceContext/ID3D12DeviceContext.h"
+#include "System/SystemUtils/CommandQueue/CommandQueue.h"
 namespace System {
 	class DescriptorHeap;
 	class RTVHeap;
@@ -13,7 +14,7 @@ namespace System {
 	class DepthStencilView;
 	//-------------------------------------------------------------
 	// @brief DirectX12マネージャー
-	// @brief DirectX12のデバイスやコマンドキューなどの管理を行うクラス
+	// @brief DirectX12のデバイスの管理を行うクラス
 	//-------------------------------------------------------------
 	class DirectX12Manager
 	{
@@ -31,23 +32,19 @@ namespace System {
 		//将来的に増やすが、現在はとりあえず1つだけ作成しておく
 		std::unique_ptr<ID3D12DeviceContext> draw_context = nullptr;
 
+		std::unique_ptr<CommandQueue> draw_command_queue = nullptr;
 
-		ComPtr<ID3D12CommandQueue> draw_queue;
-		ComPtr<ID3D12Fence> draw_fence;
-		size_t draw_fence_value = 0;
-
-		//ComPtr<ID3D12CommandQueue> copy_queue;
+		//std::unique_ptr<CommandQueue> copy_command_queue = nullptr;
 		// 将来的に、描画用のコマンドキュー以外にも、コピー用のコマンドキューやコンピュート用のコマンドキューなど
 		// を作成することも考えられるため、複数のコマンドキューを管理できるようにしておく
 		// コンピュートキューまで管理すると滅茶苦茶に散らかるので、今は描画とコピーだけやっておこう
-		//ComPtr<ID3D12CommandQueue> compute_queue;
+		//std::unique_ptr<CommandQueue> compute_command_queue = nullptr;
 
 		std::unique_ptr<CSUHeap> cbv_srv_uav_heap = nullptr;
 		std::unique_ptr<RTVHeap> rtv_heap = nullptr;
 		std::unique_ptr<DSVHeap> dsv_heap = nullptr;
 
 		int CreteDevice(ComPtr<IDXGIAdapter>& dxgi_adapter);
-		int CreateSingleCommandQueue(D3D12_COMMAND_LIST_TYPE context_type, ComPtr<ID3D12CommandQueue>& command_queue, ComPtr<ID3D12Fence>& fence_);
 		int CreateCommandQueues();
 		int CreateSingleContext(D3D12_COMMAND_LIST_TYPE context_type, std::unique_ptr<ID3D12DeviceContext>& context);
 		int CreateContexts();
@@ -59,8 +56,8 @@ namespace System {
 		IDXGIFactory6* GetFactory() const { return factory.Get(); }
 		ID3D12Device* GetDevice() const { return device.Get(); }
 
-		ID3D12CommandQueue* GetDrawQueue() const { return draw_queue.Get(); }
-		//ID3D12CommandQueue* GetCopyQueue() const { return copy_queue.Get(); }
+		ID3D12CommandQueue* GetDrawQueue() const { return draw_command_queue ? draw_command_queue->GetCommandQueue() : nullptr; }
+		//ID3D12CommandQueue* GetCopyQueue() const { return copy_command_queue ? copy_command_queue->GetCommandQueue() : nullptr; }
 
 		ID3D12DeviceContext* GetDrawContext() const { return draw_context.get(); }
 
@@ -74,7 +71,6 @@ namespace System {
 
 		//---------------------------------------------
 
-		int WaitForFence(ComPtr<ID3D12Fence> fence_, const size_t& value);
 		int DrawStart();
 
 		std::unique_ptr<RenderTargetView> CreateRenderTargetView(ID3D12Resource* resource, D3D12_RENDER_TARGET_VIEW_DESC* desc);
