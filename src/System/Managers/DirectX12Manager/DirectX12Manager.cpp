@@ -28,22 +28,12 @@ namespace System {
 
 
 
-	int DirectX12Manager::WaitForFence(ComPtr<ID3D12Fence> fence_, const size_t& value)
-	{
-		while (fence_->GetCompletedValue() < value)
-		{
-			// フェンスの完了値が、引数で指定された値に達するまで待機する
-		}
-		return 0;
-	}
-
 	int DirectX12Manager::DrawStart()
 	{
 		ID3D12CommandList* command_lists[] = { draw_context->GetCommandList() };
-		draw_queue->ExecuteCommandLists(1, command_lists);
+		draw_command_queue->Execute(1, command_lists);
 		WindowManager::Instance()->ScreenFlip();
-		draw_queue->Signal(draw_fence.Get(), ++draw_fence_value);
-		WaitForFence(draw_fence, draw_fence_value);
+		draw_command_queue->WaitForCompletion();
 		return 0;
 	}
 
@@ -99,11 +89,10 @@ namespace System {
 	}
 	int DirectX12Manager::Finalize()
 	{
-		WaitForFence(draw_fence, draw_fence_value);
+		draw_command_queue->WaitForCompletion();
 		draw_context.reset();
-		draw_queue.Reset();
-		draw_fence.Reset();
-		//copy_queue.Reset();
+		draw_command_queue.reset();
+		//copy_command_queue.reset();
 		rtv_heap.reset();
 		dsv_heap.reset();
 		cbv_srv_uav_heap.reset();
@@ -183,45 +172,15 @@ namespace System {
 
 	}
 
-	int DirectX12Manager::CreateSingleCommandQueue(D3D12_COMMAND_LIST_TYPE context_type, ComPtr<ID3D12CommandQueue>& command_queue, ComPtr<ID3D12Fence>& fence_)
-	{
-
-		D3D12_COMMAND_QUEUE_DESC desc = {};
-
-		//コマンドリストにも種類がある。代表的なのは、
-		// D3D12_COMMAND_LIST_TYPE_DIRECT：グラフィックスコマンドリスト。描画やコンピュートのコマンドを記録するためのコマンドリスト
-		// D3D12_COMMAND_LIST_TYPE_COPY：コピーコマンドリスト。リソースのコピーや転送のコマンドを記録するためのコマンドリスト
-		// D3D12_COMMAND_LIST_TYPE_COMPUTE：コンピュートコマンドリスト。コンピュートシェーダーのコマンドを記録するためのコマンドリスト
-		// コマンドキューも、コマンドリストの種類に合わせて、同じ種類のコマンドキューを作成する必要がある
-
-
-		desc.Type = context_type;	//指定されたコマンドリストの種類に合わせて、コマンドキューの種類を設定
-		desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;	// コマンドキューの優先度を「通常」に設定
-		desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;	// コマンドキューのフラグは特に設定しない
-		desc.NodeMask = 0;							// ノードマスクは特に設定しない
-		HRESULT hr = device->CreateCommandQueue(&desc, IID_PPV_ARGS(command_queue.GetAddressOf()));
-
-		if (hr != S_OK) {
-			// コマンドキューの作成に失敗した場合は、失敗を示す -1 を返す
-			return -1;
-		}
-		hr = device->CreateFence(draw_fence_value, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence_.GetAddressOf()));
-
-		if (hr != S_OK) {
-			// フェンスの作成に失敗した場合は、失敗を示す -1 を返す
-			return -1;
-		}
-
-		return 0;
-	}
-
 	int DirectX12Manager::CreateCommandQueues()
 		// コマンドキューの作成
 	{
-		if (CreateSingleCommandQueue(D3D12_COMMAND_LIST_TYPE_DIRECT, draw_queue, draw_fence) != 0) {
+		draw_command_queue = std::make_unique<CommandQueue>(device.Get(), D3D12_COMMAND_LIST_TYPE_DIRECT);
+		if (!draw_command_queue || !draw_command_queue->IsValid()) {
 			return -1;
 		}
-		//if (CreateSingleCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY, copy_queue) != 0) {
+		//copy_command_queue = std::make_unique<CommandQueue>(device.Get(), D3D12_COMMAND_LIST_TYPE_COPY);
+		//if (!copy_command_queue || !copy_command_queue->IsValid()) {
 		//	return -1;
 		//}
 		return 0;
