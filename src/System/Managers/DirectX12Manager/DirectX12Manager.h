@@ -38,6 +38,7 @@ namespace System {
 		// 将来的に、描画用のコマンドキュー以外にも、コピー用のコマンドキューやコンピュート用のコマンドキューなど
 		// を作成することも考えられるため、複数のコマンドキューを管理できるようにしておく
 		// コンピュートキューまで管理すると滅茶苦茶に散らかるので、今は描画とコピーだけやっておこう
+		//std::unique_ptr<CommandQueue> compute_command_queue = nullptr;
 
 		std::unique_ptr<CSUHeap> cbv_srv_uav_heap = nullptr;
 		std::unique_ptr<RTVHeap> rtv_heap = nullptr;

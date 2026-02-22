@@ -7,16 +7,27 @@ namespace System {
 		if (!device) return;
 
 		D3D12_COMMAND_QUEUE_DESC desc = {};
-		desc.Type = type;
-		desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-		desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-		desc.NodeMask = 0;
+
+		//コマンドリストにも種類がある。代表的なのは、
+		// D3D12_COMMAND_LIST_TYPE_DIRECT：グラフィックスコマンドリスト。描画やコンピュートのコマンドを記録するためのコマンドリスト
+		// D3D12_COMMAND_LIST_TYPE_COPY：コピーコマンドリスト。リソースのコピーや転送のコマンドを記録するためのコマンドリスト
+		// D3D12_COMMAND_LIST_TYPE_COMPUTE：コンピュートコマンドリスト。コンピュートシェーダーのコマンドを記録するためのコマンドリスト
+		// コマンドキューも、コマンドリストの種類に合わせて、同じ種類のコマンドキューを作成する必要がある
+
+		desc.Type = type;				//指定されたコマンドリストの種類に合わせて、コマンドキューの種類を設定
+		desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;	// コマンドキューの優先度を「通常」に設定
+		desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;	// コマンドキューのフラグは特に設定しない
+		desc.NodeMask = 0;							// ノードマスクは特に設定しない
 
 		HRESULT hr = device->CreateCommandQueue(&desc, IID_PPV_ARGS(command_queue.GetAddressOf()));
-		if (hr != S_OK) return;
+		if (hr != S_OK) {
+			// コマンドキューの作成に失敗した場合は、失敗を示すためnullのままにして関数を終了する
+			return;
+		}
 
 		hr = device->CreateFence(fence_value, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(fence.GetAddressOf()));
 		if (hr != S_OK) {
+			// フェンスの作成に失敗した場合は、失敗を示すためキューをリセットして関数を終了する
 			command_queue.Reset();
 		}
 	}
