@@ -12,7 +12,7 @@ namespace System {
 		~CommandQueue();
 
 		// @brief 渡されたコマンドリストをキューに積み、実行する
-		int Execute(UINT num_lists, ID3D12CommandList* const* command_lists);
+		int Execute(const std::vector<ID3D12CommandList*>& command_lists);
 
 		// @brief キューの実行完了を待つ
 		int WaitForCompletion();

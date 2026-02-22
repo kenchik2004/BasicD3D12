@@ -30,8 +30,8 @@ namespace System {
 
 	int DirectX12Manager::DrawStart()
 	{
-		ID3D12CommandList* command_lists[] = { draw_context->GetCommandList() };
-		draw_command_queue->Execute(1, command_lists);
+		std::vector<ID3D12CommandList*> command_lists = { draw_context->GetCommandList() };
+		draw_command_queue->Execute(command_lists);
 		WindowManager::Instance()->ScreenFlip();
 		draw_command_queue->WaitForCompletion();
 		return 0;

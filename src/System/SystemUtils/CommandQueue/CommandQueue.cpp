@@ -28,10 +28,10 @@ namespace System {
 		fence.Reset();
 	}
 
-	int CommandQueue::Execute(UINT num_lists, ID3D12CommandList* const* command_lists)
+	int CommandQueue::Execute(const std::vector<ID3D12CommandList*>& command_lists)
 	{
 		if (!IsValid()) return -1;
-		command_queue->ExecuteCommandLists(num_lists, command_lists);
+		command_queue->ExecuteCommandLists(static_cast<UINT>(command_lists.size()), command_lists.data());
 		command_queue->Signal(fence.Get(), ++fence_value);
 		return 0;
 	}
