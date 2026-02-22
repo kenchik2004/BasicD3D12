@@ -19,3 +19,11 @@
 template <class T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+//stdライブラリのヘッダーファイル
+#include <vector>
+#include <array>
+#include <string>
+#include <memory>
+#include <functional>
+#include <map>
+#include <unordered_map>
