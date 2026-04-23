@@ -33,7 +33,7 @@
     <ClInclude Include="src\System\SystemUtils\DescriptorHeaps\DescriptorHeap\DescriptorHeap.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="src\System\SystemUtils\Descriptors\BaseView\View.h">
+    <ClInclude Include="src\System\SystemUtils\Descriptors\View\View.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\System\SystemUtils\DeviceContext\ID3D12DeviceContext.h">
@@ -75,6 +75,24 @@
     <ClInclude Include="src\ExternalLibrary\ImGUI\imstb_truetype.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\ConstantBuffer\ConstantBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\StructuredBuffer\StructuredBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\VertexBuffer\VertexBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\IndexBuffer\IndexBuffer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\Texture\Texture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\D3DBufferInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\precompile.cpp">
@@ -98,7 +116,7 @@
     <ClCompile Include="src\System\SystemUtils\DescriptorHeaps\DescriptorHeap\DescriptorHeap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="src\System\SystemUtils\Descriptors\BaseView\View.cpp">
+    <ClCompile Include="src\System\SystemUtils\Descriptors\View\View.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="src\System\SystemUtils\DeviceContext\ID3D12DeviceContext.cpp">
@@ -129,6 +147,21 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="ExternalLibrary\ImGUI\imgui_widgets.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\SystemUtils\D3DBuffer\ConstantBuffer\ConstantBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\SystemUtils\D3DBuffer\StructuredBuffer\StructuredBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\SystemUtils\D3DBuffer\VertexBuffer\VertexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\SystemUtils\D3DBuffer\IndexBuffer\IndexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System\SystemUtils\D3DBuffer\Texture\Texture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

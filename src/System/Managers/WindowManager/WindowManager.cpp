@@ -2,7 +2,7 @@
 #include "WindowManager.h"
 #include "System/Managers/DirectX12Manager/DirectX12Manager.h"
 #include "System/SystemUtils/DeviceContext/ID3D12DeviceContext.h"
-#include "System/SystemUtils/D3DBuffer/D3DBuffer/D3DBuffer.h"
+#include "System/SystemUtils/D3DBuffer/D3DBufferInclude.h"
 
 namespace System {
 

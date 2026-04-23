@@ -44,7 +44,7 @@ VSOutput main(VSInput input)
     output.sv_position = screen_position;
     output.color = input.color;
     output.uv = input.uv;
-    output.normal = mul(world_matrix, float4(input.normal, 0.0)).xyz;
+    output.normal = mul(ObjWorld[input.instance_id], float4(input.normal, 0.0)).xyz;
     output.instance = input.instance_id;
     return output;
 

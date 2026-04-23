@@ -121,7 +121,7 @@ float4 main(PSInput input) : SV_TARGET
     metallic = 0.7;
     roughness = 0.7;
     
-    static float3 L = normalize(float3(cos(system_time), 1.0, sin(system_time)));
+    static float3 L = normalize(float3(0.0,1.0,-1.0));
     float3 N = Normalmap(normalize(input.normal), input.world_position.xyz, input.uv, normal_texture, sampler1);
     float3 V = normalize(eye_position - input.world_position.xyz);
     float3 H = normalize(L + V);

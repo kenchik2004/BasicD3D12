@@ -35,13 +35,13 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 #ifndef NDEBUG
 // デバッグビルドの場合、DirectXTexのデバッグバージョンをリンク
-#define TEX_DIR "ExternalLibrary/DirectXTex/x64/Debug/DirectXTex.lib"
+#define TEX_DIR "ExternalLibrary/DirectXTex/bin/Debug/DirectXTex.lib"
 //assimpもデバッグバージョンをリンク
-#define ASSIMP_DIR "ExternalLibrary/assimp/x64/Debug/assimp-vc143-mtd.lib"
+#define ASSIMP_DIR "ExternalLibrary/assimp/bin/Debug/assimp-vc143-mtd.lib"
 #else
 // リリースビルドの場合、DirectXTexのリリースバージョンをリンク
-#define TEX_DIR "ExternalLibrary/DirectXTex/x64/Release/DirectXTex.lib"
-#define ASSIMP_DIR "ExternalLibrary/assimp/x64/Release/assimp-vc143-mt.lib"
+#define TEX_DIR "ExternalLibrary/DirectXTex/bin/Release/DirectXTex.lib"
+#define ASSIMP_DIR "ExternalLibrary/assimp/bin/Release/assimp-vc143-mt.lib"
 #endif // !NDEBUG
 #pragma comment(lib, TEX_DIR)
 #pragma comment(lib, ASSIMP_DIR)

@@ -1,6 +1,6 @@
 #include "ID3D12DeviceContext.h"
-#include "System/SystemUtils/D3DBuffer/D3DBuffer/D3DBuffer.h"
-#include "System/SystemUtils/Descriptors/BaseView/View.h"
+#include "System/SystemUtils/D3DBuffer/D3DBufferInclude.h"
+#include "System/SystemUtils/Descriptors/View/View.h"
 #include "System/SystemUtils/DescriptorHeaps/DescriptorHeap/DescriptorHeap.h"
 
 

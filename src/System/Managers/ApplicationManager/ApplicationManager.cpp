@@ -2,7 +2,7 @@
 #include "System/Managers/WindowManager/WindowManager.h"
 #include "System/Managers/DirectX12Manager/DirectX12Manager.h"
 #include "System/SystemUtils/DescriptorHeaps/DescriptorHeap/DescriptorHeap.h"
-#include "System/SystemUtils/D3DBuffer/D3DBuffer/D3DBuffer.h"
+#include "System/SystemUtils/D3DBuffer/D3DBufferInclude.h"
 
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
@@ -902,11 +902,16 @@ namespace System {
 								DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f) *
 								DirectX::XMMatrixTransformation(DirectX::XMVectorZero(), DirectX::XMQuaternionIdentity(), DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 1.0f), DirectX::XMVectorZero(), DirectX::XMQuaternionIdentity(), DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 							mapped_data->world_matrix = w_m;
-							DirectX::XMMATRIX v_m = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(-10.0f, 10.0f, -10.0f, 1.0f), DirectX::XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f), DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+							DirectX::XMMATRIX v_m = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(-5.0f, 5.0f, -5.0f, 1.0f), DirectX::XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f), DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 							mapped_data->view_matrix = v_m;
-							DirectX::XMMATRIX p_m = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(45.0f), static_cast<float>(WindowManager::Instance()->GetWindowWidth()) / WindowManager::Instance()->GetWindowHeight(), 0.1f, 1000.0f);
+							
+	
+							//ウィンドウ拡縮に合わせる場合
+							DirectX::XMMATRIX p_m = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(60.0f), static_cast<float>(WindowManager::Instance()->GetWindowWidth()) / WindowManager::Instance()->GetWindowHeight(), 0.1f, 1000.0f);
+							//バックバッファのサイズに合わせる場合
+							//DirectX::XMMATRIX p_m = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(60.0f), static_cast<float>(back_buffer->GetResource()->GetDesc().Width / back_buffer->GetResource()->GetDesc().Height), 0.1f, 1000.0f);
 							mapped_data->projection_matrix = p_m;
-							mapped_data->eye_position = DirectX::XMFLOAT3(-10.0f, 10.0f, -10.0f);
+							mapped_data->eye_position = DirectX::XMFLOAT3(-5.0f, 5.0f, -5.0f);
 						}
 						int elem_count = objs_buffer->GetElementCount();
 						int x_count = 40;
@@ -914,7 +919,7 @@ namespace System {
 						for (int i = 0; i < elem_count; i++) {
 							objs_buffer->At(i)->world_matrix =
 								DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f) *
-								DirectX::XMMatrixRotationY(system_time+0.05f*i) *
+								DirectX::XMMatrixRotationY(system_time+0.04f*i) *
 								//DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(90.0f)) *
 								//DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(90.0f)) *
 								DirectX::XMMatrixTranslation((i % x_count) * 0.5f, i / (x_count * z_count), (i / x_count - i / (x_count * z_count) * x_count) * 0.5f);
