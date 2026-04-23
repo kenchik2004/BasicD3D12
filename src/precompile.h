@@ -1,6 +1,7 @@
 #pragma once
 
 //MicrosoftのWindows APIを使用するためのヘッダーファイル
+#define NOMINMAX //Windows.hのmin,maxマクロを無効化
 #include <Windows.h>
 
 
@@ -27,3 +28,20 @@ using ComPtr = Microsoft::WRL::ComPtr<T>;
 #include <functional>
 #include <map>
 #include <unordered_map>
+#include <fstream>
+#include <filesystem>
+
+#include "DirectXTex.h"
+
+#ifndef NDEBUG
+// デバッグビルドの場合、DirectXTexのデバッグバージョンをリンク
+#define TEX_DIR "ExternalLibrary/DirectXTex/x64/Debug/DirectXTex.lib"
+//assimpもデバッグバージョンをリンク
+#define ASSIMP_DIR "ExternalLibrary/assimp/x64/Debug/assimp-vc143-mtd.lib"
+#else
+// リリースビルドの場合、DirectXTexのリリースバージョンをリンク
+#define TEX_DIR "ExternalLibrary/DirectXTex/x64/Release/DirectXTex.lib"
+#define ASSIMP_DIR "ExternalLibrary/assimp/x64/Release/assimp-vc143-mt.lib"
+#endif // !NDEBUG
+#pragma comment(lib, TEX_DIR)
+#pragma comment(lib, ASSIMP_DIR)

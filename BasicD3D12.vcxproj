@@ -19,16 +19,49 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ExternalLibrary\ImGUI\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\backends\imgui_impl_win32.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imconfig.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imgui.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imgui_impl_dx12.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imgui_impl_win32.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imgui_internal.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imstb_rectpack.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imstb_textedit.h" />
+    <ClInclude Include="src\ExternalLibrary\ImGUI\imstb_truetype.h" />
     <ClInclude Include="src\precompile.h" />
+    <ClInclude Include="src\System\Managers\ApplicationManager\ApplicationManager.h" />
+    <ClInclude Include="src\System\Managers\DirectX12Manager\DirectX12Manager.h" />
+    <ClInclude Include="src\System\Managers\WindowManager\WindowManager.h" />
     <ClInclude Include="src\System\SystemUtils\CommandQueue\CommandQueue.h" />
+    <ClInclude Include="src\System\SystemUtils\DescriptorHeaps\DescriptorHeap\DescriptorHeap.h" />
+    <ClInclude Include="src\System\SystemUtils\DescriptorHeaps\PipeLineState\PipeLineState.h" />
+    <ClInclude Include="src\System\SystemUtils\Descriptors\BaseView\View.h" />
+    <ClInclude Include="src\System\SystemUtils\DeviceContext\ID3D12DeviceContext.h" />
+    <ClInclude Include="src\System\SystemUtils\D3DBuffer\D3DBuffer\D3DBuffer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui.cpp" />
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui_demo.cpp" />
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui_draw.cpp" />
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui_impl_dx12.cpp" />
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui_tables.cpp" />
+    <ClCompile Include="ExternalLibrary\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\System\Managers\ApplicationManager\ApplicationManager.cpp" />
+    <ClCompile Include="src\System\Managers\DirectX12Manager\DirectX12Manager.cpp" />
+    <ClCompile Include="src\System\Managers\WindowManager\WindowManager.cpp" />
     <ClCompile Include="src\System\SystemUtils\CommandQueue\CommandQueue.cpp" />
+    <ClCompile Include="src\System\SystemUtils\DescriptorHeaps\DescriptorHeap\DescriptorHeap.cpp" />
+    <ClCompile Include="src\System\SystemUtils\DescriptorHeaps\PipeLineState\PipeLineState.cpp" />
+    <ClCompile Include="src\System\SystemUtils\Descriptors\BaseView\View.cpp" />
+    <ClCompile Include="src\System\SystemUtils\DeviceContext\ID3D12DeviceContext.cpp" />
+    <ClCompile Include="src\System\SystemUtils\D3DBuffer\D3DBuffer\D3DBuffer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -126,11 +159,13 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;ExternalLibrary/assimp/include;ExternalLibrary/DirectXTex;ExternalLibrary/ImGUI</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>ExternalLibrary/assimp/x64/Debug</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>ExternalLibrary/assimp/x64/Debug/assimp-vc143-mtd.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -139,19 +174,22 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;ExternalLibrary/assimp/include;ExternalLibrary/DirectXTex;ExternalLibrary/ImGUI</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <DelayLoadDLLs>ExternalLibrary/assimp/x64/Release/assimp-vc143-mt.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
