@@ -544,6 +544,7 @@ namespace System {
 	std::unique_ptr<Texture> metallic_texture;
 	std::unique_ptr<Texture> emission_texture;
 	std::unique_ptr<Texture> depth_texture;
+	std::unique_ptr<Texture> tex3d;
 	struct MeshInfo {
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
@@ -726,7 +727,8 @@ namespace System {
 		}
 		if (!depth_texture) {
 			//深度バッファを作成する
-			depth_texture = Texture::TextureLoader::CreateEmpty(WindowManager::Instance()->GetBackBufferWidth(), WindowManager::Instance()->GetBackBufferHeight(), DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+			D3D12_RESOURCE_DESC desc = TEX2D_DESC(back_buffer->Width(), back_buffer->Height(), DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+			depth_texture = Texture::Loader::CreateEmpty(desc);
 			if (!depth_texture->IsValid()) {
 				return -1;
 			}
@@ -750,32 +752,32 @@ namespace System {
 
 		}
 		if (!diffuse_texture) {
-			diffuse_texture = Texture::TextureLoader::LoadFromFile(L"Assets/Textures/sample_diffuse.jpg");
+			diffuse_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample.png");
 			if (!diffuse_texture->IsValid()) {
 				return -1;
 			}
 		}
 
 		if (!normal_texture) {
-			normal_texture = Texture::TextureLoader::LoadFromFile(L"Assets/Textures/sample_normal.png");
+			normal_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_normal.png");
 			if (!normal_texture->IsValid()) {
 				return -1;
 			}
 		}
 		if (!roughness_texture) {
-			roughness_texture = Texture::TextureLoader::LoadFromFile(L"Assets/Textures/sample_roughness.jpg");
+			roughness_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_roughness.jpg");
 			if (!roughness_texture->IsValid()) {
 				return -1;
 			}
 		}
 		if (!metallic_texture) {
-			metallic_texture = Texture::TextureLoader::LoadFromFile(L"Assets/Textures/sample_metallic.jpg");
+			metallic_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_metallic.jpg");
 			if (!metallic_texture->IsValid()) {
 				return -1;
 			}
 		}
 		//if (!emission_texture) {
-		//	emission_texture = Texture::TextureLoader::LoadFromFile(L"Assets/Textures/sample_emission.jpg");
+		//	emission_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_emission.jpg");
 		//	if (!emission_texture->IsValid()) {
 		//		return -1;
 		//	}
@@ -812,6 +814,15 @@ namespace System {
 			objs_buffer = std::make_unique<StructuredBufferTyped<ObjectCBuffer>>(10000);
 
 		}
+		D3D12_CLEAR_VALUE clear_value = {};
+		clear_value.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		clear_value.Color[0] = 1.0f;
+		clear_value.Color[1] = 0.0f;
+		clear_value.Color[2] = 1.0f;
+		clear_value.Color[3] = 1.0f;
+		tex3d =
+			Texture::Loader::CreateEmpty(TEX3D_DESC(128, 128, 6, DXGI_FORMAT_R8G8B8A8_UNORM, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET), &clear_value);
+
 
 
 
@@ -833,8 +844,11 @@ namespace System {
 			static constexpr unsigned int lower_width = 1920 / 2;
 			static constexpr unsigned int lower_height = 1080 / 2;
 			if (resize_flag) {
+
 				WindowManager::Instance()->ResizeBackBuffers(size_up ? upper_width : lower_width, size_up ? upper_height : lower_height);
-				depth_texture = Texture::TextureLoader::CreateEmpty(WindowManager::Instance()->GetBackBufferWidth(), WindowManager::Instance()->GetBackBufferHeight(), DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+				D3D12_RESOURCE_DESC desc = TEX2D_DESC(size_up ? upper_width : lower_width, size_up ? upper_height : lower_height, DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+
+				depth_texture = Texture::Loader::CreateEmpty(desc);
 				resize_flag = false;
 				size_up = !size_up;
 			}
@@ -866,6 +880,7 @@ namespace System {
 				if (DirectX12Manager::Instance()->DrawBegin() < 0) {
 					return -1;
 				}
+				float clear_color[4] = { 1.0f, 0.0f, 1.0f, 1.0f };
 
 				D3D12_RESOURCE_BARRIER begin_barrier = {};
 				begin_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -876,7 +891,6 @@ namespace System {
 				cmd_list->ResourceBarrier(1, &begin_barrier);
 
 				cmd_list->OMSetRenderTargets(1, &handle, FALSE, &dsv_handle);
-				float clear_color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 				cmd_list->ClearRenderTargetView(handle, clear_color, 0, nullptr);
 				cmd_list->ClearDepthStencilView(dsv_handle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 				//試験的に虹色トライアングルの描画コマンドを入れてみる
@@ -904,8 +918,8 @@ namespace System {
 							mapped_data->world_matrix = w_m;
 							DirectX::XMMATRIX v_m = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(-5.0f, 5.0f, -5.0f, 1.0f), DirectX::XMVectorSet(0.0f, 3.0f, 0.0f, 0.0f), DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 							mapped_data->view_matrix = v_m;
-							
-	
+
+
 							//ウィンドウ拡縮に合わせる場合
 							DirectX::XMMATRIX p_m = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(60.0f), static_cast<float>(WindowManager::Instance()->GetWindowWidth()) / WindowManager::Instance()->GetWindowHeight(), 0.1f, 1000.0f);
 							//バックバッファのサイズに合わせる場合
@@ -919,7 +933,7 @@ namespace System {
 						for (int i = 0; i < elem_count; i++) {
 							objs_buffer->At(i)->world_matrix =
 								DirectX::XMMatrixScaling(0.01f, 0.01f, 0.01f) *
-								DirectX::XMMatrixRotationY(system_time+0.04f*i) *
+								DirectX::XMMatrixRotationY(system_time + 0.04f * i) *
 								//DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(90.0f)) *
 								//DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(90.0f)) *
 								DirectX::XMMatrixTranslation((i % x_count) * 0.5f, i / (x_count * z_count), (i / x_count - i / (x_count * z_count) * x_count) * 0.5f);
@@ -1022,16 +1036,27 @@ namespace System {
 				SystemGUI::ImGuiDrawEnd();
 				SystemGUI::PresentImGui(cmd_list);
 #endif
-				static int press_counter = 0;
-				if (GetKeyState(VK_SPACE) & 0x8000) {
-					if (press_counter == 0) {
+				static int press_counter_f11 = 0;
+				if (GetKeyState(VK_F11) & 0x8000) {
+					if (press_counter_f11 == 0) {
 						resize_flag = true;
 					}
-					press_counter++;
+					press_counter_f11++;
 				}
 				else {
-					press_counter = 0;
+					press_counter_f11 = 0;
 				}
+				static int press_counter_prtscr = 0;
+				if (GetKeyState(VK_SPACE) & 0x8000) {
+					if (press_counter_prtscr == 0) {
+						Texture::Loader::SaveToFile(depth_texture.get(), L"Assets/Textures/tex3d_test.dds");
+					}
+					press_counter_prtscr++;
+				}
+				else {
+					press_counter_prtscr = 0;
+				}
+
 
 				D3D12_RESOURCE_BARRIER end_barrier = {};
 				end_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

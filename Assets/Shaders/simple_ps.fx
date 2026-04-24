@@ -94,7 +94,6 @@ StructuredBuffer<MaterialData> Mat : register(t0);
 SamplerState sampler1 : register(s0);
 Texture2D Tex[] : register(t5);
 
-
 float4 main(PSInput input) : SV_TARGET
 {
 

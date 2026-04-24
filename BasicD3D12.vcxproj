@@ -203,7 +203,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>ExternalLibrary/assimp/x64/$(Configuration)</AdditionalLibraryDirectories>
-      <DelayLoadDLLs>ExternalLibrary/assimp/x64/Release/assimp-vc143-mt.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "ExternalLibrary\assimp\bin\Release\assimp-vc143-mt.dll" $(OutDir)</Command>
