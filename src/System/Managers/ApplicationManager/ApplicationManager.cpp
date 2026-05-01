@@ -3,6 +3,7 @@
 #include "System/Managers/DirectX12Manager/DirectX12Manager.h"
 #include "System/SystemUtils/DescriptorHeaps/DescriptorHeap/DescriptorHeap.h"
 #include "System/SystemUtils/D3DBuffer/D3DBufferInclude.h"
+#include "System/SystemUtils/AssetLoaders/TextureLoader/TextureLoader.h"
 
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
@@ -728,7 +729,7 @@ namespace System {
 		if (!depth_texture) {
 			//深度バッファを作成する
 			D3D12_RESOURCE_DESC desc = TEX2D_DESC(back_buffer->Width(), back_buffer->Height(), DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
-			depth_texture = Texture::Loader::CreateEmpty(desc);
+			depth_texture = TextureLoader::CreateEmpty(desc);
 			if (!depth_texture->IsValid()) {
 				return -1;
 			}
@@ -751,33 +752,42 @@ namespace System {
 
 
 		}
+#define TEST
 		if (!diffuse_texture) {
-			diffuse_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample.png");
+			diffuse_texture = TextureLoader::LoadFromFile(L"Assets/Textures/sample.png");
+#ifndef TEST
 			if (!diffuse_texture->IsValid()) {
 				return -1;
 			}
+#endif
 		}
 
 		if (!normal_texture) {
-			normal_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_normal.png");
+			normal_texture = TextureLoader::LoadFromFile(L"Assets/Textures/sample_normal.png");
+#ifndef TEST
 			if (!normal_texture->IsValid()) {
 				return -1;
 			}
+#endif
 		}
 		if (!roughness_texture) {
-			roughness_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_roughness.jpg");
+			roughness_texture = TextureLoader::LoadFromFile(L"Assets/Textures/sample_roughness.jpg");
+#ifndef TEST
 			if (!roughness_texture->IsValid()) {
 				return -1;
 			}
+#endif
 		}
 		if (!metallic_texture) {
-			metallic_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_metallic.jpg");
+			metallic_texture = TextureLoader::LoadFromFile(L"Assets/Textures/sample_metallic.jpg");
+#ifndef TEST
 			if (!metallic_texture->IsValid()) {
 				return -1;
 			}
+#endif
 		}
 		//if (!emission_texture) {
-		//	emission_texture = Texture::Loader::LoadFromFile(L"Assets/Textures/sample_emission.jpg");
+		//	emission_texture = TextureLoader::LoadFromFile(L"Assets/Textures/sample_emission.jpg");
 		//	if (!emission_texture->IsValid()) {
 		//		return -1;
 		//	}
@@ -793,14 +803,15 @@ namespace System {
 			//CreateConstantBufer();
 
 		}
+
 		if (!material_buffer) {
 			material_buffer = std::make_unique<StructuredBufferTyped<MaterialData>>(10);
 			tex_indices = {
-				diffuse_texture->Srv()->GetIndex(),
-				normal_texture->Srv()->GetIndex(),
-				roughness_texture->Srv()->GetIndex(),
-				metallic_texture->Srv()->GetIndex(),
-				//emission_texture->Srv()->GetIndex()
+			diffuse_texture->IsLoaded() ? diffuse_texture->Srv()->GetIndex() : 0,
+			normal_texture->IsLoaded() ? normal_texture->Srv()->GetIndex() : 0,
+			roughness_texture->IsLoaded() ? roughness_texture->Srv()->GetIndex() : 0,
+			metallic_texture->IsLoaded() ? metallic_texture->Srv()->GetIndex() : 0,
+			//emission_texture->Srv()->GetIndex()
 			};
 			for (size_t i = 0; i < 10; i++) {
 				material_buffer->At(i)->diffuse_color = mat_diffuse_color[i];
@@ -821,7 +832,7 @@ namespace System {
 		clear_value.Color[2] = 1.0f;
 		clear_value.Color[3] = 1.0f;
 		tex3d =
-			Texture::Loader::CreateEmpty(TEX3D_DESC(128, 128, 6, DXGI_FORMAT_R8G8B8A8_UNORM, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET), &clear_value);
+			TextureLoader::CreateEmpty(TEX3D_DESC(128, 128, 6, DXGI_FORMAT_R8G8B8A8_UNORM, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET), &clear_value);
 
 
 
@@ -848,7 +859,7 @@ namespace System {
 				WindowManager::Instance()->ResizeBackBuffers(size_up ? upper_width : lower_width, size_up ? upper_height : lower_height);
 				D3D12_RESOURCE_DESC desc = TEX2D_DESC(size_up ? upper_width : lower_width, size_up ? upper_height : lower_height, DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
-				depth_texture = Texture::Loader::CreateEmpty(desc);
+				depth_texture = TextureLoader::CreateEmpty(desc);
 				resize_flag = false;
 				size_up = !size_up;
 			}
@@ -870,6 +881,33 @@ namespace System {
 
 			if constexpr (true) {
 				// ここにゲームの更新や描画のコードを入れることになる
+				static bool init = false;
+				if (!init) {
+					if (diffuse_texture->IsLoaded() &&
+						normal_texture->IsLoaded() &&
+						roughness_texture->IsLoaded() &&
+						metallic_texture->IsLoaded())
+					{
+						tex_indices = {
+						diffuse_texture->IsLoaded() ? diffuse_texture->Srv()->GetIndex() : 0,
+						normal_texture->IsLoaded() ? normal_texture->Srv()->GetIndex() : 0,
+						roughness_texture->IsLoaded() ? roughness_texture->Srv()->GetIndex() : 0,
+						metallic_texture->IsLoaded() ? metallic_texture->Srv()->GetIndex() : 0,
+						};
+
+						for (size_t i = 0; i < 10; i++) {
+							material_buffer->At(i)->texture_indices.slot[0] = tex_indices[0];
+							material_buffer->At(i)->texture_indices.slot[1] = tex_indices[1];
+							material_buffer->At(i)->texture_indices.slot[2] = tex_indices[2];
+							material_buffer->At(i)->texture_indices.slot[3] = tex_indices[3];
+						}
+						init = true;
+					}
+				}
+
+
+
+
 
 				auto back_buffer = WindowManager::Instance()->GetCurrentBackBuffer();
 				auto handle = back_buffer->Rtv()->GetCPUHandle();
@@ -881,6 +919,7 @@ namespace System {
 					return -1;
 				}
 				float clear_color[4] = { 1.0f, 0.0f, 1.0f, 1.0f };
+
 
 				D3D12_RESOURCE_BARRIER begin_barrier = {};
 				begin_barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -1049,7 +1088,7 @@ namespace System {
 				static int press_counter_prtscr = 0;
 				if (GetKeyState(VK_SPACE) & 0x8000) {
 					if (press_counter_prtscr == 0) {
-						Texture::Loader::SaveToFile(depth_texture.get(), L"Assets/Textures/tex3d_test.dds");
+						TextureLoader::SaveToFile(depth_texture.get(), L"Assets/Textures/tex3d_test.dds");
 					}
 					press_counter_prtscr++;
 				}
@@ -1083,6 +1122,7 @@ namespace System {
 	}
 	int ApplicationManager::Finalize()
 	{
+		TextureLoader::DeleteThreads();
 		//SystemGUI::DestroyImGui();
 		WindowManager::Instance()->ReleaseSwapChain();
 		DirectX12Manager::Instance()->Finalize();

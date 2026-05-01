@@ -8,8 +8,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	std::wstring class_name = L"BasicD3D12Window";		// ウィンドウクラス名
 	std::wstring window_name = L"そんなウィンドウ名で大丈夫か?";	// ウィンドウタイトル
-	unsigned int window_width = 1280;		// ウィンドウの幅
-	unsigned int window_height = 720;		// ウィンドウの高さ
+	unsigned int window_width = 1920*2;		// ウィンドウの幅
+	unsigned int window_height = 1080*2;		// ウィンドウの高さ
 
 	// ウィンドウの情報を設定
 	System::WindowManager::Instance()->SetWindowInfo(class_name, window_name, window_width, window_height);

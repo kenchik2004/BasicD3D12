@@ -33,6 +33,8 @@
     <ClInclude Include="src\System\Managers\ApplicationManager\ApplicationManager.h" />
     <ClInclude Include="src\System\Managers\DirectX12Manager\DirectX12Manager.h" />
     <ClInclude Include="src\System\Managers\WindowManager\WindowManager.h" />
+    <ClInclude Include="src\System\SystemUtils\AssetLoaders\AssetLoader\AssetLoader.h" />
+    <ClInclude Include="src\System\SystemUtils\AssetLoaders\TextureLoader\TextureLoader.h" />
     <ClInclude Include="src\System\SystemUtils\CommandQueue\CommandQueue.h" />
     <ClInclude Include="src\System\SystemUtils\D3DBuffer\ConstantBuffer\ConstantBuffer.h" />
     <ClInclude Include="src\System\SystemUtils\D3DBuffer\D3DBufferInclude.h" />
@@ -62,6 +64,8 @@
     <ClCompile Include="src\System\Managers\ApplicationManager\ApplicationManager.cpp" />
     <ClCompile Include="src\System\Managers\DirectX12Manager\DirectX12Manager.cpp" />
     <ClCompile Include="src\System\Managers\WindowManager\WindowManager.cpp" />
+    <ClCompile Include="src\System\SystemUtils\AssetLoaders\AssetLoader\AssetLoader.cpp" />
+    <ClCompile Include="src\System\SystemUtils\AssetLoaders\TextureLoader\TextureLoader.cpp" />
     <ClCompile Include="src\System\SystemUtils\CommandQueue\CommandQueue.cpp" />
     <ClCompile Include="src\System\SystemUtils\D3DBuffer\ConstantBuffer\ConstantBuffer.cpp" />
     <ClCompile Include="src\System\SystemUtils\D3DBuffer\IndexBuffer\IndexBuffer.cpp" />
@@ -85,26 +89,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -202,7 +206,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>ExternalLibrary/assimp/x64/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>ExternalLibrary/assimp/x64/$(Configuration);ExternalLibrary/DirectXTex/bin/$(Configuration)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
     </Link>
     <PostBuildEvent>
